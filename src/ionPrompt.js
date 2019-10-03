@@ -37,7 +37,7 @@ class IonPrompt {
     input.setAttribute("type", "search");
     input.setAttribute("onkeydown",
       "if(event.keyCode == 13 && this.value.trim() != '') {IonPrompt.Execute(this, this.value.trim());}"+
-      "else if (event.keyCode == 9) { event.preventDefault(); AutoComplete();}"
+      "else if (event.keyCode == 9) { event.preventDefault(); IonPrompt.AutoComplete(this, this.value, this.selectionStart);}"
     );
     inputField.appendChild(input);
 
@@ -47,9 +47,29 @@ class IonPrompt {
     return ionPrompt;
   }
 
-  static AutoComplete()
+  static AutoComplete(inputObject, text, caretPos)
   {
+    var start = caretPos;
+    var end = caretPos;
+    while (start > 0 && text.substring(start-1, start) != " ") {
+      start--;
+    }
 
+    while (end < text.length && text.substring(end, end+1) != " ") {
+      end++;
+    }
+
+    inputObject.setSelectionRange(start, end);
+    var selectedWord = text.substring(start, end);
+
+    for (var i = 0; i < validWords.length; i++) {
+      if (validWords[i].toLowerCase().includes(selectedWord.toLowerCase())) {
+        selectedWord = validWords[i];
+        inputObject.value = text.replace(text.substring(start, end), selectedWord);
+        inputObject.setSelectionRange(start+selectedWord.length, start+selectedWord.length);
+        break;
+      }
+    }
   }
 
   static Execute(inputObject, cmd)
@@ -94,3 +114,8 @@ class IonPrompt {
     }
   }
 }
+
+var validWords = [
+  "echo",
+  "ping",
+];
