@@ -1,0 +1,25 @@
+{
+  "name": "steamcmd-automaton",
+  "version": "1.0.0",
+  "description": "An easy way of creating, managing and running dedicated servers",
+  "main": "main.js",
+  "dependencies": {
+    "adm-zip": "^0.4.13",
+    "electron": "^6.0.11",
+    "std-pour": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LucasionGS/SteamCMD-Automaton.git"
+  },
+  "author": "Lucasion",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LucasionGS/SteamCMD-Automaton/issues"
+  },
+  "homepage": "https://github.com/LucasionGS/SteamCMD-Automaton#readme"
+}
