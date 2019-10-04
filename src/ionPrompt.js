@@ -49,18 +49,12 @@ class IonPrompt {
 
   static AutoComplete(inputObject, text, caretPos)
   {
-    var start = caretPos;
-    var end = caretPos;
-    while (start > 0 && text.substring(start-1, start) != " ") {
-      start--;
-    }
+    var curData = this.GetCurrentWord(text, caretPos);
 
-    while (end < text.length && text.substring(end, end+1) != " ") {
-      end++;
-    }
-
+    var start = curData.start;
+    var end = curData.end;
+    var selectedWord = curData.selectedWord;
     inputObject.setSelectionRange(start, end);
-    var selectedWord = text.substring(start, end);
 
     for (var i = 0; i < validWords.length; i++) {
       if (selectedWord != "" && selectedWord != " " && validWords[i].toLowerCase().startsWith(selectedWord.toLowerCase())) {
@@ -71,6 +65,26 @@ class IonPrompt {
         break;
       }
     }
+  }
+
+  static GetCurrentWord(text, caretPos)
+  {
+    var start = caretPos;
+    var end = caretPos;
+    while (start > 0 && text.substring(start-1, start) != " ") {
+      start--;
+    }
+
+    while (end < text.length && text.substring(end, end+1) != " ") {
+      end++;
+    }
+
+    var selectedWord = text.substring(start, end);
+    return {
+      "selectedWord": selectedWord,
+      "start": start,
+      "end": end
+    };
   }
 
   static Execute(inputObject, cmd)
@@ -95,17 +109,22 @@ class IonPrompt {
       WriteLine(errorText, "#FF0000");
     }
 
+    /* Commands Section START */
     if (command == "ping") {
       WriteLine("pong!");
     }
     else if (command == "echo") {
       WriteLine(rest);
     }
+    else if (command == "create") {
+
+    }
     //If command is unrecognized
     else {
       Error("Command not recognized");
       clearInput = false;
     }
+    /* Commands Section END */
 
     if (clearInput) {
       inputObject.value = "";
@@ -119,4 +138,6 @@ class IonPrompt {
 var validWords = [
   "echo",
   "ping",
+  "create",
+  ""
 ];
