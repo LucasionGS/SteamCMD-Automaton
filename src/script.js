@@ -11,12 +11,13 @@ const Directory = {
   "servers": appdata+"SteamCMD Automaton/Servers/"
 }
 
-
-function LoadServerList(querySelector) {
-  const prompt = IonPrompt.CreatePrompt();
+function AddPromptToCmdPanel() {
+  const prompt = IonPrompt.CreatePrompt("cmdPrompt");
   console.log(prompt);
   document.querySelector("#cmdpanel").appendChild(prompt);
+}
 
+function LoadServerList(querySelector) {
   const listObject = document.querySelector(querySelector);
   fs.mkdirSync(Directory.app, {recursive: true});
   fs.mkdirSync(Directory.servers, {recursive: true});
@@ -30,12 +31,12 @@ function LoadServerList(querySelector) {
       console.log("headers:", +res.headers["content-length"]);
       const fileSize = +res.headers["content-length"];
       var bytesDownloaded = 0;
-
+      IonPrompt.Execute(document.querySelector("#cmdPrompt_input"), "echo Downloading SteamCMD...");
       res.on("data", (d) => {
         //process.stdout.write(d);
         //console.log(d);
         bytesDownloaded += d.length;
-        console.log((bytesDownloaded / fileSize * 100) + "%");
+        IonPrompt.Execute(document.querySelector("#cmdPrompt_input"), "echo "+Math.round(bytesDownloaded / fileSize * 100, 4) + "%");
       });
 
       const file = fs.createWriteStream(Directory.steamcmd+"steamcmd.zip");
@@ -43,6 +44,7 @@ function LoadServerList(querySelector) {
 
       var workingCmd;
       file.on("finish", () => {
+        IonPrompt.Execute(document.querySelector("#cmdPrompt_input"), "echo Extracting...");
         var zip = new AdmZip(Directory.steamcmd+"steamcmd.zip");
         var zipEntries = zip.getEntries();
 
@@ -51,6 +53,7 @@ function LoadServerList(querySelector) {
           fs.writeFileSync(Directory.steamcmd+"steamcmd.exe", zipEntry.getData());
           fs.unlinkSync(Directory.steamcmd+"steamcmd.zip");
         });
+        IonPrompt.Execute(document.querySelector("#cmdPrompt_input"), "echo Download Complete.");
       });
     })
     .on("error", (e) => {

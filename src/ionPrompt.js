@@ -24,7 +24,7 @@ class IonPrompt {
 
     const logText = document.createElement("p");
     logText.setAttribute("id", identifier+"_logText");
-    logText.innerHTML = "<span style='font-style:oblique; color:#aaaaaa;'>Command Prompt</span>";
+    logText.innerHTML = "<span style='font-style:oblique; color:#aaaaaa;'>Console Controller</span>";
     logScreen.appendChild(logText);
 
     const inputField = document.createElement("div");
@@ -56,13 +56,28 @@ class IonPrompt {
     var selectedWord = curData.selectedWord;
     inputObject.setSelectionRange(start, end);
 
+    const startLine = text.substring(0, start);
+    const endLine = text.substring(end, text.length);
+
+    var possibleWords = [];
+
     for (var i = 0; i < validWords.length; i++) {
       if (selectedWord != "" && selectedWord != " " && validWords[i].toLowerCase().startsWith(selectedWord.toLowerCase())) {
-        notification("Replaced", "Changed \""+selectedWord+"\" to \""+validWords[i]+"\"", 1000);
-        selectedWord = validWords[i];
-        inputObject.value = text.replace(text.substring(start, end), selectedWord);
-        inputObject.setSelectionRange(start+selectedWord.length, start+selectedWord.length);
-        break;
+        //notification("Replaced", "Changed \""+selectedWord+"\" to \""+validWords[i]+"\"", 1000);
+        //selectedWord = validWords[i];
+        possibleWords.push(validWords[i]);
+      }
+    }
+    if (possibleWords.length == 1) {
+      selectedWord = possibleWords[0];
+      inputObject.value = startLine+selectedWord+endLine;
+      inputObject.setSelectionRange(start+selectedWord.length, start+selectedWord.length);
+    }
+    else if (possibleWords.length > 1) {
+      inputObject.setSelectionRange(caretPos, caretPos);
+      this.Execute(inputObject, "echo Possible Auto Completes:", false);
+      for (var i = 0; i < possibleWords.length; i++) {
+        this.Execute(inputObject, "echo \t"+possibleWords[i], false);
       }
     }
   }
@@ -87,7 +102,7 @@ class IonPrompt {
     };
   }
 
-  static Execute(inputObject, cmd)
+  static Execute(inputObject, cmd, clearConsoleOnFinish = true)
   {
     const promptObject = inputObject.parentNode.parentNode;
     const promptLog = promptObject.firstChild;
@@ -116,8 +131,48 @@ class IonPrompt {
     else if (command == "echo") {
       WriteLine(rest);
     }
-    else if (command == "create") {
+    else if (command == "idlist") {
+      WriteLine("Loading...");
+      fs.readFile("./api/id_list.json", (err, list) => {
+        list = JSON.parse(list);
 
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].name.toLowerCase().includes(rest.toLowerCase())) {
+            WriteLine(list[i].appid + " - " + list[i].name);
+          }
+        }
+      });
+    }
+    else if (command == "clear") {
+      logText.innerHTML = "<span style='font-style:oblique; color:#aaaaaa;'>Console Controller</span>";
+    }
+    else if (command == "create") {
+      window.location.href = "createServer.html";
+      if (args[1]) {
+
+      }
+    }
+    else if (command == "dictionary") {
+      if (args[1]) {
+
+        if (args[1] == "add") {
+          if (args[2]) {
+            validWords.push(args[2]);
+            WriteLine("Added \""+args[2]+"\" to Dictionary.");
+          }
+        }
+        else if (args[1] == "clear") {
+          validWords = [];
+          WriteLine("Cleared Dictionary.");
+        }
+
+      }
+      else {
+        WriteLine("Usage:"+
+          "\ndictionary add [Word]"+
+          "\ndictionary clear"
+        );
+      }
     }
     //If command is unrecognized
     else {
@@ -126,11 +181,13 @@ class IonPrompt {
     }
     /* Commands Section END */
 
-    if (clearInput) {
-      inputObject.value = "";
-    }
-    else {
-      inputObject.setSelectionRange(0, inputObject.value.length);
+    if (clearConsoleOnFinish) {
+      if (clearInput) {
+        inputObject.value = "";
+      }
+      else {
+        inputObject.setSelectionRange(0, inputObject.value.length);
+      }
     }
   }
 }
@@ -138,6 +195,10 @@ class IonPrompt {
 var validWords = [
   "echo",
   "ping",
+  "clear",
   "create",
-  ""
+  "idlist",
+  "server",
+  "dictionary",
+  "add",
 ];
