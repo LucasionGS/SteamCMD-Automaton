@@ -63,7 +63,8 @@ class IonPrompt {
     var selectedWord = text.substring(start, end);
 
     for (var i = 0; i < validWords.length; i++) {
-      if (validWords[i].toLowerCase().includes(selectedWord.toLowerCase())) {
+      if (selectedWord != "" && selectedWord != " " && validWords[i].toLowerCase().startsWith(selectedWord.toLowerCase())) {
+        notification("Replaced", "Changed \""+selectedWord+"\" to \""+validWords[i]+"\"", 1000);
         selectedWord = validWords[i];
         inputObject.value = text.replace(text.substring(start, end), selectedWord);
         inputObject.setSelectionRange(start+selectedWord.length, start+selectedWord.length);
