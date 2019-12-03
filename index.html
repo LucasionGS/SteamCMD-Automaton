@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <title>SteamCMD Automaton</title>
     <script src="src/script.js" charset="utf-8"></script>
-    <script src="src/notifications.js" charset="utf-8"></script>
-    <script src="src/ionPrompt.js" charset="utf-8"></script>
+    <!-- <script src="src/ionPrompt.js" charset="utf-8"></script> -->
     <link rel="stylesheet" href="src/style.css">
     <style id="styletheme">
       :root{
@@ -16,7 +15,7 @@
       }
     </style>
   </head>
-  <body onload="IonPrompt.IonPromptStyle(); NotificationStyle(); LoadServerList('.serverlist'); AddPromptToCmdPanel();">
+  <body onload="IonPrompt.IonPromptStyle(); Notif.addStyle({'theme':'dark'}); LoadServerList('.serverlist'); const thisPrompt = AddPromptToCmdPanel();">
     <div class="serverlist">
       <!-- Servers go here -->
     </div>

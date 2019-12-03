@@ -4,19 +4,6 @@
     <meta charset="utf-8">
     <title>SteamCMD Automaton</title>
     <script src="src/script.js" charset="utf-8"></script>
-    <script src="src/notifications.js" charset="utf-8"></script>
-    <script src="src/ionPrompt.js" charset="utf-8"></script>
-    <script type="text/javascript"> // For getting server IDs
-    fs.readFile("./api/id_list.json", (err, list) => {
-      list = JSON.parse(list);
-
-      var _html = "";
-      for (var i = 0; i < list.length; i++) {
-        _html += "<option value='"+list[i].appid+"'>"+list[i].name+"</option>";
-      }
-      document.querySelector("#idOptions").innerHTML = _html;
-    });
-    </script>
     <link rel="stylesheet" href="src/style.css">
     <style id="styletheme">
       :root{

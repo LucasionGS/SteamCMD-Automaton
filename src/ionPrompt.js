@@ -116,7 +116,7 @@ class IonPrompt {
     function WriteLine(text, color = "#FFFFFF")
     {
       logText.innerHTML += "\n<span style='color:"+color+";'>"+text+"</span>";
-      promptLog.scrollTop = promptLog.scrollHeight
+      promptLog.scrollTop = promptLog.scrollHeight;
     }
 
     function Error(errorText)
@@ -124,9 +124,15 @@ class IonPrompt {
       WriteLine(errorText, "#FF0000");
     }
 
+    function RunInConsole(appPath) {
+      const exec = require("child_process").exec;
+      var appProc = exec(appPath);
+      return appProc;
+    }
+
     /* Commands Section START */
-    if (command == "ping") {
-      WriteLine("pong!");
+    if (command == "steamcmd") {
+      RunInConsole()
     }
     else if (command == "echo") {
       WriteLine(rest);
