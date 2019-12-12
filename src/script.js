@@ -3,9 +3,14 @@ const https = require('https');
 const cProc = require('child_process');
 const AdmZip = require('adm-zip');
 const {Notif} = require("notif");
+const {AutoComplete} = require("autocomplete");
 
 
 // const { pour } = require('std-pour');
+/**
+ * @type {AutoComplete}
+ */
+var ac;
 
 var appdata = process.env.APPDATA.replace(/\\+|\/\/+/g, "/")+"/";
 const Directory = {
@@ -18,6 +23,20 @@ function AddPromptToCmdPanel() {
   const prompt = IonPrompt.CreatePrompt("cmdPrompt");
   console.log(prompt);
   document.querySelector("#cmdpanel").appendChild(prompt);
+  ac = new AutoComplete(prompt.querySelector("#cmdPrompt_input"), 
+  [ // Command List
+    "steamcmd",
+    "echo",
+    "clear",
+    "create",
+    "idlist",
+    "server",
+    "dictionary",
+    "dictionary add",
+    "dictionary clear",
+    "reload",
+  ]);
+  ac.onlyFullText = true;
   return prompt;
 }
 
