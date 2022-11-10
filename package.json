@@ -6,7 +6,7 @@
   "dependencies": {
     "adm-zip": "^0.4.13",
     "autocomplete": "github:LucasionGS/AutoComplete",
-    "electron": "^6.0.11",
+    "electron": "^18.3.7",
     "notif": "github:LucasionGS/notif",
     "std-pour": "^1.1.0"
   },
